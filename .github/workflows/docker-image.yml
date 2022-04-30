@@ -15,10 +15,13 @@ jobs:
         include:
           - dockerfile: ./consumer-model/Dockerfile
             image-name: jellytporing-model
+            working-directory: ./consumer-model
           - dockerfile: ./prometheus/Dockerfile
             image-name: jellytoring-prometheus
+            working-directory: ./prometheus
           - dockerfile: ./grafana/Dockerfile
             image-name: jellytoring-grafana
+            working-directory: ./grafana
     steps:
     - uses: actions/checkout@v3
     
@@ -32,7 +35,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-        context: .
+        context: ${{ matrix.working-directory }}
         file: ${{ matrix.dockerfile }}
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ matrix.image-name }}:latest
