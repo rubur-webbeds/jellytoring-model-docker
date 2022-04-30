@@ -14,7 +14,7 @@ jobs:
       matrix:
         include:
           - dockerfile: ./consumer-model/Dockerfile
-            image-name: jellytporing-model
+            image-name: jellytoring-model
             working-directory: ./consumer-model
           - dockerfile: ./prometheus/Dockerfile
             image-name: jellytoring-prometheus
