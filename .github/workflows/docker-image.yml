@@ -1,0 +1,41 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./consumer-model/Dockerfile
+            image-name: jellytoring-model
+            working-directory: ./consumer-model
+          - dockerfile: ./prometheus/Dockerfile
+            image-name: jellytoring-prometheus
+            working-directory: ./prometheus
+          - dockerfile: ./grafana/Dockerfile
+            image-name: jellytoring-grafana
+            working-directory: ./grafana
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PAT }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: ${{ matrix.working-directory }}
+        file: ${{ matrix.dockerfile }}
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ matrix.image-name }}:latest
