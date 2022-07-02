@@ -109,6 +109,10 @@ def predict(input_folder):
 
                     filepath = os.path.join(root, file[1])  # file path
 
+                    if 'results' in filepath:
+                        print('skipped ', filepath)
+                        continue
+
                     if re.search("\.(png|jpg|jpeg)$", file[1]):  # if the file is an image
 
                         image_np = imageio.imread(filepath, pilmode="RGB")  # read image
@@ -173,7 +177,7 @@ def predict(input_folder):
                             os.makedirs(PATH_TO_OUTPUT_DIR + "/output")
                             print('created output directory')
                         imageio.imsave(PATH_TO_OUTPUT_DIR + "/output"+ "/" + name_out + "_o" + ext, image_np)
-                        inference_status = 'ok - ' + PATH_TO_OUTPUT_DIR + "/output"
+                        inference_status = PATH_TO_OUTPUT_DIR + "/output" + "/" + name_out + "_o" + ext + '#' + name_out + ext
 
             # get mean inference time
             # times.pop(0)
